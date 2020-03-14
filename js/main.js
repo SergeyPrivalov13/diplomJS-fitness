@@ -1,8 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-  'use strict';
-  
-  
+  'use strict'; 
+
+  const body = document.body,
+    // Блок с header
+    headerMain = document.querySelector('.header-main');
 
   // Функция появления модального окна
   const modal = (elem, tar) => {
@@ -15,7 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
           let target = event.target;
           
           if(!target.closest('.form-content') || target.closest('.close-btn')){
-            idPopUp.style.display = 'none'; 
+            idPopUp.style.display = 'none';
+            body.style.cssText = `overflow-x: hidden`; 
           } 
           
         });
@@ -26,7 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
       let dataSet = tar.dataset.popup.split('').slice(1).join(''),
         id = document.getElementById(dataSet);
 
-      id.style.display = 'block';      
+      id.style.display = 'block';
+      body.style.overflow = `hidden`;     
       popUp(id);        
     }
   };
@@ -48,10 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Блок Header
   const header = () => {
-    const
-      // Блок с header
-      headerMain = document.querySelector('.header-main');
-
     headerMain.addEventListener('click', (event) => {
       let target = event.target;
 
@@ -80,15 +80,66 @@ document.addEventListener('DOMContentLoaded', () => {
       const menu = document.querySelector('.popup-menu');
       if(target.closest('.menu-button')){
         menu.style.display = `flex`;        
-      } else {
-        console.log('no');        
       }
       if(target.closest('.close-menu-btn') || target.closest('.scroll')){
         menu.style.display = `none`;
-      }
+      } 
+
+      // Слайдер Клубные Карты
+      const mainSlider = () => {
+
+      };
+      mainSlider();
     });  
   };
   header();
+
+  // На верх
+  const toTop = () => {
+    const goTopBtn = document.getElementById('totop');  
+
+    const trackScroll = () => {
+      const menuBtn = document.querySelector('.top-menu');
+      let scrolled = window.pageYOffset,
+        coords = headerMain.clientHeight,
+        headHeight = document.querySelector('.head-main').clientHeight;
+        
+        console.log(scrolled);
+        console.log(coords);
+        console.dir(headHeight);
+        if(scrolled > headHeight){
+          menuBtn.style.position = `fixed`;  
+        }
+        if(scrolled < headHeight){
+          menuBtn.style.position = `relative`;  
+        }
+      /* if(scrolled > headHeight){
+        menuBtn.style.position = `fixed`;
+      }
+      if(scrolled < headHeight){
+        menuBtn.style.position = `fixed`;
+      } */
+        
+  
+      if (scrolled > coords) {
+        goTopBtn.style.display = `block`;
+      }
+      if (scrolled < coords) {
+        goTopBtn.style.display = `none`;
+      }
+    };
+  
+    const backToTop = () => {
+      if (window.pageYOffset > 0) {
+        window.scrollBy(0, -80);
+        setTimeout(backToTop, 0);
+      }
+    };
+  
+    window.addEventListener('scroll', trackScroll);
+    goTopBtn.addEventListener('click', backToTop);
+  };
+  toTop();
 
 
 

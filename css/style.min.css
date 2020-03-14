@@ -101,9 +101,9 @@ embed {
   max-width: 100%
 }
 
-html {
+/* html {
   overflow-y: scroll
-}
+} */
 
 ul {
   list-style: none
@@ -1019,7 +1019,7 @@ header .head .club-select .clubs-list ul {
   position: absolute;
   top: 60px;
   left: 0;
-  z-index: 100;
+  z-index: 1011;
   background-color: #381b35;
   padding: 15px;
   border: 1px solid #ffd11a;
@@ -1113,7 +1113,8 @@ header .head .call .btn {
 }
 
 header nav.top-menu {
-  z-index: 4444;
+  position: relative;
+  z-index: 1010;
   top: 0;
   left: 0;
   width: 100%;
@@ -2054,7 +2055,7 @@ footer .footer-bottom .right .socials .social-icon:hover a {
 }
 
 #totop {
-  display: block;
+  display: none;
   position: fixed;
   bottom: 10px;
   right: 10px;

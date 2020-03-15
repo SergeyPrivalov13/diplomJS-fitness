@@ -73,37 +73,6 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   header();
 
-/*   // Слайдер Клубные Карты
-  const mainSlider = (slideClass, time) => {
-    const
-      // Обёртка слайдера
-      mainSlider = document.querySelector('.main-slider'),
-      // Каждый слайд
-      slide = document.querySelectorAll(slideClass);
-      
-    // Номер слайда
-    let currentSlide = 0;
-    
-    // Функция автопрокрутки
-    const autoPlay = () => {
-      slide[currentSlide].style.display = `none`;
-      currentSlide++;
-      if(currentSlide >= slide.length){
-        currentSlide = 0;
-      }
-      slide[currentSlide].style.display = `flex`;
-    };
-    // Функция запуска слайда
-    const startSlide = () => {
-      setInterval(autoPlay, time);
-    };
-    startSlide();
-    
-  };
-  mainSlider('.main-slid', 2000);
-  //mainSlider('.services-slid');
-  mainSlider('.gallery-slid', 3000); */
-
   // Слайдер
   const slider = (sliderBlock, slideClass, timer, displaySlide, sliderDots) => {
     const
@@ -251,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
   slider('.main-slider', '.main-slid', 4000, 'flex');
-  slider('.services-slider', '.services-slid', 1000, 'block');
+  //slider('.services-slider', '.services-slid', 1000, 'block');
   slider('.gallery-slider', '.gallery-slid', 2500, 'flex', '.gallery-dots');
 
   // На верх
@@ -292,6 +261,142 @@ document.addEventListener('DOMContentLoaded', () => {
     goTopBtn.addEventListener('click', backToTop);
   };
   toTop();
+
+  // Клубные карты
+  const cards = () => {
+    const 
+    // Блок с формой
+    cardOrder = document.getElementById('card_order'),
+    // Блок с месяцами
+    time = document.querySelector('.time'),
+    // Месяца
+    timeMounth = time.querySelectorAll('input'),
+    // Тело «Мозаика»
+    mozaika = document.getElementById('card_leto_mozaika'),
+    // Тело «Щелково»
+    schelkovo = document.getElementById('card_leto_schelkovo'),
+    // Промокод
+    promoCode = document.getElementById('promoCode'),
+    // Цена
+    priceTotal = document.getElementById('price-total'),
+    // Поля ввода
+    // Имя
+    name = document.getElementById('callback_form-name'),
+    // Номер телефона
+    phone = document.getElementById('callback_form-phone'),
+    // Обработка персональных данных
+    cardCheck = document.querySelector('.card_check'),
+    // Кнопка забронировать
+    orderBtn = document.querySelector('.card-order-btn');    
+    
+    const countSum = () => {
+      let total = 0,
+        timeValue,
+        clubValue;
+      
+      const promoValue = promoCode.value;      
+
+      const valueRadio = (inputType) => {
+        let nameRadio = document.getElementsByName(inputType);
+        for( let i = 0; i < nameRadio.length; i++){
+          if(nameRadio[i].type === 'radio' && nameRadio[i].checked){
+            timeValue = +nameRadio[i].value;
+          }
+        }
+      };
+      valueRadio('card-type');
+
+      const valueRadi = (inputType) => {
+        let nameRadio = document.getElementsByName(inputType);
+        for( let i = 0; i < nameRadio.length; i++){
+          if(nameRadio[i].type === 'radio' && nameRadio[i].checked){
+            clubValue = nameRadio[i].value;
+          }
+        }
+      };
+      valueRadi('club-name');
+
+      const totalVal = (numb, val) => {
+        if(timeValue === numb){
+          total = val;  
+        }        
+      }; 
+      const totalValPromo = (numb, val) => {
+        if(timeValue === numb){
+          total = Math.floor(val - (val / 100 * 30));  
+        }        
+      }; 
+
+      if(promoValue === 'ТЕЛО2020'){
+        if(clubValue === 'mozaika'){
+          totalValPromo(1, 1999);
+          totalValPromo(6, 9900);
+          totalValPromo(9, 13900);
+          totalValPromo(12, 19900);
+        } else {
+          totalValPromo(1, 2999);
+          totalValPromo(6, 14900);
+          totalValPromo(9, 21900);
+          totalValPromo(12, 24900);
+        } 
+        
+      } else {
+        if(clubValue === 'mozaika'){
+          totalVal(1, 1999);
+          totalVal(6, 9900);
+          totalVal(9, 13900);
+          totalVal(12, 19900);
+        } else {
+          totalVal(1, 2999);
+          totalVal(6, 14900);
+          totalVal(9, 21900);
+          totalVal(12, 24900);
+        }  
+      }
+      priceTotal.textContent = `${total} руб.`;  
+
+    };
+
+    cardOrder.addEventListener('change', (event) => {
+      let target = event.target;
+      
+      if(target.matches('input')){
+          countSum();
+        }
+
+      /*   name: /(^([А-Я]{1})?[а-я]{1,14}$)/,
+      phone: /^(8|\+7)(\s{1})?([-()]*(\s{1})?\d){10}$/, */
+
+
+      
+    });
+
+    name.addEventListener('input', () => {
+      let placeName = name.value,
+            rep = /[-\.;+=@#$%^&*№;":?!<>`~":'a-zA-Z0-9]+$/i;
+          if (rep.test(placeName)) {
+            placeName = placeName.replace(rep, '');
+            name.value = placeName;
+          }
+    });
+    
+    phone.addEventListener('input', function () {
+      let placeSum = phone.value,
+        rep = /[-\.;+=@#$%^&*№;":?!<>`~`ёЁa-zA-Zа-яА-Я]/;
+      if (rep.test(placeSum)) {
+        placeSum = placeSum.replace(rep, '');
+        phone.value = placeSum;
+      }
+    });
+  
+
+
+  
+  
+
+
+  };
+  cards();
 
 
 

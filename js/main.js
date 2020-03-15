@@ -33,22 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
       body.style.overflow = `hidden`;     
       popUp(id);        
     }
-  };
-  
-  // Подарок
-  const gift = () => {
-    // Блок с картинкой
-    const fixedFift = document.querySelector('.fixed-gift');
-
-    fixedFift.addEventListener('click', (event) => {
-      let target = event.target;
-      if(target.closest('.fixed-gift')){
-        fixedFift.style.display = 'none';
-        modal('.fixed-gift', target);        
-      }
-    });
-  };
-  gift();
+  };  
 
   // Блок Header
   const header = () => {
@@ -83,16 +68,40 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if(target.closest('.close-menu-btn') || target.closest('.scroll')){
         menu.style.display = `none`;
-      } 
-
-      // Слайдер Клубные Карты
-      const mainSlider = () => {
-
-      };
-      mainSlider();
+      }  
     });  
   };
   header();
+
+  // Слайдер Клубные Карты
+  const mainSlider = (slideClass) => {
+    const
+      // Обёртка слайдера
+      mainSlider = document.querySelector('.main-slider'),
+      // Каждый слайд
+      slide = document.querySelectorAll(slideClass);
+      console.log(slide);
+      
+    // Номер слайда
+    let currentSlide = 0;
+    
+    // Функция автопрокрутки
+    const autoPlay = () => {
+      slide[currentSlide].style.display = `none`;
+      currentSlide++;
+      if(currentSlide >= slide.length){
+        currentSlide = 0;
+      }
+      slide[currentSlide].style.display = `flex`;
+    };
+    // Функция запуска слайда
+    const startSlide = () => {
+      setInterval(autoPlay, 1000);
+    };
+    startSlide();
+    
+  };
+  mainSlider('.main-slid');
 
   // На верх
   const toTop = () => {
@@ -103,24 +112,16 @@ document.addEventListener('DOMContentLoaded', () => {
       let scrolled = window.pageYOffset,
         coords = headerMain.clientHeight,
         headHeight = document.querySelector('.head-main').clientHeight;
-        
-        console.log(scrolled);
-        console.log(coords);
-        console.dir(headHeight);
-        if(scrolled > headHeight){
-          menuBtn.style.position = `fixed`;  
-        }
-        if(scrolled < headHeight){
-          menuBtn.style.position = `relative`;  
-        }
-      /* if(scrolled > headHeight){
-        menuBtn.style.position = `fixed`;
+      
+        // Прилипание меню
+      if(scrolled > headHeight){
+        menuBtn.style.position = `fixed`;  
       }
       if(scrolled < headHeight){
-        menuBtn.style.position = `fixed`;
-      } */
-        
-  
+        menuBtn.style.position = `relative`;  
+      }  
+      
+      // Появление кнопки на верх
       if (scrolled > coords) {
         goTopBtn.style.display = `block`;
       }

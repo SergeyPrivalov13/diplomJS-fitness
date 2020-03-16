@@ -314,7 +314,6 @@ document.addEventListener('DOMContentLoaded', () => {
     prevSlider(){
       if(this.options.infinity || this.options.position > 0){
         --this.options.position;
-        console.log(this.options.position);
         if(this.options.position < 0){
           this.options.position = this.slides.length - this.slidesToShow;
         }
@@ -324,7 +323,6 @@ document.addEventListener('DOMContentLoaded', () => {
     nextSlider(){
       if(this.options.infinity || this.options.position < this.slides.length - this.slidesToShow){
         ++this.options.position;
-        console.log(this.options.position);
         if(this.options.position > this.slides.length - this.slidesToShow){
           this.options.position = 0;
         }
@@ -445,28 +443,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const cards = () => {
     const 
     // Блок с формой
-    cardOrder = document.getElementById('card_order'),
-    // Блок с месяцами
-    time = document.querySelector('.time'),
-    // Месяца
-    timeMounth = time.querySelectorAll('input'),
-    // Тело «Мозаика»
-    mozaika = document.getElementById('card_leto_mozaika'),
-    // Тело «Щелково»
-    schelkovo = document.getElementById('card_leto_schelkovo'),
+    cardOrder = document.getElementById('card_order'),    
     // Промокод
     promoCode = document.getElementById('promoCode'),
     // Цена
-    priceTotal = document.getElementById('price-total'),
-    // Поля ввода
-    // Имя
-    name = document.getElementById('callback_form-name'),
-    // Номер телефона
-    phone = document.getElementById('callback_form-phone'),
-    // Обработка персональных данных
-    cardCheck = document.querySelector('.card_check'),
-    // Кнопка забронировать
-    orderBtn = document.querySelector('.card-order-btn');    
+    priceTotal = document.getElementById('price-total');    
     
     const countSum = () => {
       let total = 0,

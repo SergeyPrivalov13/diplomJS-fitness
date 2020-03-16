@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
           
           if(!target.closest('.form-content') || target.closest('.close-btn')){
             idPopUp.style.display = 'none';
-            body.style.cssText = `overflow-x: hidden`; 
+            body.style.cssText = `overflow-x: hidden`;  
           } 
           
         });
@@ -220,8 +220,133 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
   slider('.main-slider', '.main-slid', 4000, 'flex');
-  //slider('.services-slider', '.services-slid', 1000, 'block');
   slider('.gallery-slider', '.gallery-slid', 2500, 'flex', '.gallery-dots');
+
+  // Карусель
+  class SliderCarousel{
+    constructor({
+      main,
+      wrap,
+      position = 0,
+      infinity = false,   // Бесконечная прокрутка
+      next,               // Стрелочка в право
+      prev,               // Стрелочка в лево
+      slidesToShow = 3    // Кол-во показываемых слайдов по умолчанию
+
+    }){
+      this.main = document.querySelector(main);
+      this.wrap = document.querySelector(wrap);
+      // Все слайды
+      this.slides = document.querySelector(wrap).children;
+      // Стрелочки
+      this.next = document.querySelector(next);
+      this.prev = document.querySelector(prev);
+
+      this.slidesToShow = slidesToShow;
+
+      this.options = {        
+        position,                                         // Позицыя
+        infinity,                                         // Бесконечность
+        widthSlides: Math.floor(100 / this.slidesToShow)  // Ширина слайдера
+
+      };
+    }
+  
+    // Запускает слайдер
+    init(){
+      this.addGloClass();
+      this.addStyle();
+
+      // Запускаем метод если пользователь передал кнопки
+      if(this.prev && this.next){
+        this.controlSlider();
+      } else {
+        // Иначе создаём свои кнопки
+        this.addArrow();
+        this.controlSlider();
+      }
+    }
+
+    // Метод добавление своих классов
+    addGloClass() {
+      // Добавчляем класс к блокам
+      this.main.classList.add('glo-slider');
+      this.wrap.classList.add('glo-slider__wrap');
+      // Перебираем все слайды
+      for(const item of this.slides) {
+        // Добавляем каждому слайду класс
+        item.classList.add('glo-slider__item');
+      }
+    }
+
+    // Метод добавление стилей
+    addStyle() {
+      // Добавляем тэг style
+      const style = document.createElement('style');
+      // Добавляем id
+      style.id = 'slideCarousel-style';
+      // Прописываем стили
+      style.textContent = `
+        .glo-slider {
+          overflow: hidden !important;
+        }
+        .glo-slider__wrap {
+          display: flex !important;
+          transition: transform 0.5s !important;
+          will-change: tranform !important;
+        }
+        .glo-slider__item {
+          flex: 0 0 ${this.options.widthSlides}% !important;
+        }
+
+      `;
+
+      // Вставляем в head
+      document.head.appendChild(style);
+    }
+
+    // Клик по кнопкам
+    controlSlider(){
+      this.prev.addEventListener('click', this.prevSlider.bind(this));
+      this.next.addEventListener('click', this.nextSlider.bind(this));
+    }
+
+    prevSlider(){
+      if(this.options.infinity || this.options.position > 0){
+        --this.options.position;
+        console.log(this.options.position);
+        if(this.options.position < 0){
+          this.options.position = this.slides.length - this.slidesToShow;
+        }
+        this.wrap.style.transform = `translateX(-${this.options.position * this.options.widthSlides}%)`;
+      }
+    }
+    nextSlider(){
+      if(this.options.infinity || this.options.position < this.slides.length - this.slidesToShow){
+        ++this.options.position;
+        console.log(this.options.position);
+        if(this.options.position > this.slides.length - this.slidesToShow){
+          this.options.position = 0;
+        }
+        this.wrap.style.transform = `translateX(-${this.options.position * this.options.widthSlides}%)`;
+      }
+    }
+    // Метод добавления кнопок
+    addArrow(){
+
+    }
+  }
+
+  const carousel = new SliderCarousel({
+    main: '.services-wrapper',    // Блок со слайдером
+    wrap: '.services-slider',     // Блок со слайдами
+    prev: '#test-left',           // Стрелочка на лево
+    next: '#test-right',          // Стрелочка на право
+    slidesToShow: 5,              // Кол-во слайдов
+    infinity: true,               // Прокрутка по кругу
+  });
+  // Запуск слайдера
+  carousel.init();
 
   // На верх
   const toTop = () => {
@@ -262,7 +387,61 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   toTop();
 
-  // Клубные карты
+  // Маска для телефона  
+  const setCursorPosition = (pos, elem) => {
+    elem.focus();
+    if (elem.setSelectionRange) {
+      elem.setSelectionRange(pos, pos);
+    } else if (elem.createTextRange) {
+        let range = elem.createTextRange();
+        range.collapse(true);
+        range.moveEnd("character", pos);
+        range.moveStart("character", pos);
+        range.select();
+    }
+  };  
+  const mask = (event) => {
+    let target = event.target;  
+
+    let matrix = "+7 (___) ___ ____",
+        i = 0,
+        def = matrix.replace(/\D/g, ""),
+        val = target.value.replace(/\D/g, "");  
+
+    if (def.length >= val.length) {
+      val = def;
+    }
+    target.value = matrix.replace(/./g, function(a) {
+        return /[_\d]/.test(a) && i < val.length ? val.charAt(i++) : i >= val.length ? "" : a;
+    });
+    if (event.type === "blur") {
+        if (target.value.length === 2) {
+          target.value = "";
+        }
+    } else {
+      setCursorPosition(target.value.length, target);
+    }
+  };  
+
+  let input = document.querySelectorAll('input');
+  input.forEach((elem) => {
+    
+    if(elem.getAttribute('name') === 'phone'){
+      elem.addEventListener('input', mask, false);
+      
+    } else if(elem.getAttribute('name') === 'name'){
+      elem.addEventListener('input', () => {
+        let placeName = elem.value,
+              rep = /[-\.;+=@#$%^&*№;":?!<>`~":'a-zA-Z0-9]+$/i;
+            if (rep.test(placeName)) {
+              placeName = placeName.replace(rep, '');
+              elem.value = placeName;
+            }
+      });
+    }
+  });
+
+  // Калькулятор - Клубные карты
   const cards = () => {
     const 
     // Блок с формой
@@ -363,38 +542,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if(target.matches('input')){
           countSum();
         }
-
-      /*   name: /(^([А-Я]{1})?[а-я]{1,14}$)/,
-      phone: /^(8|\+7)(\s{1})?([-()]*(\s{1})?\d){10}$/, */
-
-
       
     });
-
-    name.addEventListener('input', () => {
-      let placeName = name.value,
-            rep = /[-\.;+=@#$%^&*№;":?!<>`~":'a-zA-Z0-9]+$/i;
-          if (rep.test(placeName)) {
-            placeName = placeName.replace(rep, '');
-            name.value = placeName;
-          }
-    });
-    
-    phone.addEventListener('input', function () {
-      let placeSum = phone.value,
-        rep = /[-\.;+=@#$%^&*№;":?!<>`~`ёЁa-zA-Zа-яА-Я]/;
-      if (rep.test(placeSum)) {
-        placeSum = placeSum.replace(rep, '');
-        phone.value = placeSum;
-      }
-    });
-  
-
-
-  
-  
-
-
   };
   cards();
 

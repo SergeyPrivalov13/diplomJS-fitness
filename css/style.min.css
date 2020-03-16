@@ -1567,28 +1567,31 @@ nav.popup-menu .close-menu-btn img {
   margin-right: 5px
 }
 
-.services-slider {
+.services-wrapper {
   position: relative;
-  display: flex;
-  margin: 0 auto;
-  padding-left: 15px;
-  padding-right: 15px
+  
 }
 
-.services-slider .services-next, .services-slider .services-prev {
+.services-slider {
+  display: flex;
+  margin: 0 auto;
+  padding-right: 15px;
+  margin-left: -23px;
+}
+
+#services .services-slider .services-next, #services .services-slider .services-prev {
   top: 20%;
 }
-.services-slider .services-next {
-  right: 2px !important;
+#services .services-slider .services-next {
+  right: 0;
 }
-.services-slider .services-prev {
-  left: 2px !important;
+#services .services-slider .services-prev {
+  left: 12px;
 }
 
 .services-slider .slide {
   text-align: center;
   margin-right: 6px;
-  margin-left: 6px;
   width: 210px
 }
 

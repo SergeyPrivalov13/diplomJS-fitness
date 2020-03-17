@@ -33,7 +33,24 @@ document.addEventListener('DOMContentLoaded', () => {
       body.style.overflow = `hidden`;     
       popUp(id);        
     }
-  };  
+  };
+  
+  // Подарок
+  const gift = () => {
+    // Блок с подарком
+    const fixedFift = document.querySelector('.fixed-gift');
+
+    if(fixedFift){
+      fixedFift.addEventListener('click', (event) => {
+        let target = event.target;
+        if(target.closest('.fixed-gift')){
+          fixedFift.style.display = 'none';
+          modal('.fixed-gift', target);        
+        }
+      });
+    }
+  };
+  gift();
 
   // Блок Header
   const header = () => {
@@ -439,6 +456,128 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Ajax - отправка формы
+  const sendForm = (formId, checkName) => {
+    const
+      errorMessage = 'Что то пошло не так...',
+      loadMessage = 'Загрузка...',
+      successMessage = document.getElementById('thanks'),
+      consentMessage = 'Нужно поставить галочку',
+      // Форма
+      form = document.getElementById(formId),
+      // Блок для показа сообщения
+      statusMessage = document.createElement('div');
+      statusMessage.style.color = `white`;
+
+    // Функция запроса на сервер
+    const postData = (body) => {
+      return new Promise((resolve, reject) => {
+        // Создаём элемент XMLHttpRequest
+        const request = new XMLHttpRequest();  
+        // Отслеживаем статус отправки сообщения
+        request.addEventListener('readystatechange', () => {
+    
+          if(request.readyState !== 4){
+            return;
+          }  
+          if(request.status === 200){
+            resolve();        
+          } else {
+            reject(request.status);      
+          }   
+        });
+    
+        // Метод отправки и путь к серверу
+        request.open('POST', './server.php');
+    
+        // Настройка заголовков
+        // Настройка заголовков для формата JSON
+        request.setRequestHeader('Content-type', 'application/json');    
+    
+        // Открываем соединение и отправляем данные на сервер
+        // Отправляем данные в формате JSON
+        request.send(JSON.stringify(body));
+      });
+    };
+
+    const thanks = (elem) => {
+      elem.addEventListener('click', (event) => {
+        let target = event.target;
+        
+        if(!target.closest('.form-content') || target.closest('.close-btn')){
+          elem.style.display = 'none';
+          body.style.cssText = `overflow-x: hidden`;  
+        } 
+        
+      });
+    };
+
+    // Отслеживаем клик по кнопке
+    form.addEventListener('submit', (event) => {
+      // Запрещаем стандартное поведение кнопки (отправку формы)
+      event.preventDefault();
+      let inputs = form.querySelectorAll('input'),
+        checkInpit = document.getElementsByName(checkName)[0].checked;
+      if(checkInpit){        
+        // Проверка на пустоту полей
+        for(let i = 0; i < inputs.length; i++){
+          if(inputs[i].value === ''){
+            alert('Заполните все поля в форме!');  
+            return;
+          }
+        }
+
+        // Добавляем элемент на страницу
+        form.appendChild(statusMessage);
+      
+        // Добавляем сообщение о Загрузке
+        statusMessage.textContent = loadMessage;
+
+        // Объект FormData - содержит данные из формы
+        const formData = new FormData(form);
+        let body = {};
+
+        formData.forEach((val, key) => {
+          body[key] = val;
+        });
+        postData(body)
+          .then(() => {          
+            if(form.getAttribute('name') === 'free-visit-form' || form.getAttribute('name') === 'callback-form'){
+              const freeVisit = document.getElementById('free_visit_form');
+              freeVisit.style.display = 'none';
+            }
+
+            if(form.getAttribute('name') === 'callback-form'){
+              const callback = document.getElementById('form1');
+              callback.style.display = 'none';
+            }
+            
+            successMessage.style.display = `block`;
+            thanks(successMessage);
+            form.reset();
+            statusMessage.remove();
+            
+            setTimeout(() => {
+              successMessage.style.display = `none`;
+              statusMessage.remove();
+            }, 5000);
+          })
+          .catch((error) => {
+            statusMessage.textContent = errorMessage;
+            console.error(error); 
+          });
+          
+        } else {
+          alert('Нужно ваше согласие наобработку персональных данных');  
+        }   
+    });
+  };
+  sendForm('form1', 'person-check3');
+  sendForm('form2', 'person-check4');
+  sendForm('card_order', 'person-check2');
+  sendForm('banner-form', 'person-check1');
+  sendForm('footer_form', 'club-name');
+
   // Калькулятор - Клубные карты
   const cards = () => {
     const 
@@ -452,9 +591,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const countSum = () => {
       let total = 0,
         timeValue,
-        clubValue;
-      
-      const promoValue = promoCode.value;      
+        clubValue;     
 
       const valueRadio = (inputType) => {
         let nameRadio = document.getElementsByName(inputType);
@@ -485,36 +622,38 @@ document.addEventListener('DOMContentLoaded', () => {
         if(timeValue === numb){
           total = Math.floor(val - (val / 100 * 30));  
         }        
-      }; 
+      };
 
-      if(promoValue === 'ТЕЛО2020'){
-        if(clubValue === 'mozaika'){
-          totalValPromo(1, 1999);
-          totalValPromo(6, 9900);
-          totalValPromo(9, 13900);
-          totalValPromo(12, 19900);
+      if(promoCode){
+        const promoValue = promoCode.value;
+        if(promoValue === 'ТЕЛО2020'){
+          if(clubValue === 'mozaika'){
+            totalValPromo(1, 1999);
+            totalValPromo(6, 9900);
+            totalValPromo(9, 13900);
+            totalValPromo(12, 19900);
+          } else {
+            totalValPromo(1, 2999);
+            totalValPromo(6, 14900);
+            totalValPromo(9, 21900);
+            totalValPromo(12, 24900);
+          } 
+          
         } else {
-          totalValPromo(1, 2999);
-          totalValPromo(6, 14900);
-          totalValPromo(9, 21900);
-          totalValPromo(12, 24900);
-        } 
-        
-      } else {
-        if(clubValue === 'mozaika'){
-          totalVal(1, 1999);
-          totalVal(6, 9900);
-          totalVal(9, 13900);
-          totalVal(12, 19900);
-        } else {
-          totalVal(1, 2999);
-          totalVal(6, 14900);
-          totalVal(9, 21900);
-          totalVal(12, 24900);
-        }  
+          if(clubValue === 'mozaika'){
+            totalVal(1, 1999);
+            totalVal(6, 9900);
+            totalVal(9, 13900);
+            totalVal(12, 19900);
+          } else {
+            totalVal(1, 2999);
+            totalVal(6, 14900);
+            totalVal(9, 21900);
+            totalVal(12, 24900);
+          }  
+        }
+        priceTotal.textContent = `${total} руб.`;  
       }
-      priceTotal.textContent = `${total} руб.`;  
-
     };
 
     cardOrder.addEventListener('change', (event) => {
@@ -527,17 +666,4 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
   cards();
-
-
-
-  
-
-  
-
-  
-
-
-
-
-
 });

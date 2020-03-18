@@ -581,150 +581,73 @@ document.addEventListener('DOMContentLoaded', () => {
   sendForm('footer_form', 'club-name');
 
   // Калькулятор - Клубные карты
-  /* const cards = () => {
-    const 
-    // Блок с формой
-    cardOrder = document.getElementById('card_order'),    
-    // Промокод
-    promoCode = document.getElementById('promoCode'),
-    // Цена
-    priceTotal = document.getElementById('price-total');    
-    
-    const countSum = () => {
-      let total = 0,
-        timeValue,
-        clubValue;     
-
-      const valueRadio = (inputType) => {
-        let nameRadio = document.getElementsByName(inputType);
-        for( let i = 0; i < nameRadio.length; i++){
-          if(nameRadio[i].type === 'radio' && nameRadio[i].checked){
-            timeValue = +nameRadio[i].value;
-          }
-        }
-      };
-      valueRadio('card-type');
-
-      const valueRadi = (inputType) => {
-        let nameRadio = document.getElementsByName(inputType);
-        for( let i = 0; i < nameRadio.length; i++){
-          if(nameRadio[i].type === 'radio' && nameRadio[i].checked){
-            clubValue = nameRadio[i].value;
-          }
-        }
-      };
-      valueRadi('club-name');
-
-      const totalVal = (numb, val) => {
-        if(timeValue === numb){
-          total = val;  
-        }        
-      }; 
-      const totalValPromo = (numb, val) => {
-        if(timeValue === numb){
-          total = Math.floor(val - (val / 100 * 30));  
-        }        
-      };
-
-      if(promoCode){
-        const promoValue = promoCode.value;
-        if(promoValue === 'ТЕЛО2020'){
-          if(clubValue === 'schelkovo'){
-            totalValPromo(1, 1999);
-            totalValPromo(6, 9900);
-            totalValPromo(9, 13900);
-            totalValPromo(12, 19900);
-          } else {
-            totalValPromo(1, 2999);
-            totalValPromo(6, 14900);
-            totalValPromo(9, 21900);
-            totalValPromo(12, 24900);
-          } 
-          
-        } else {
-          if(clubValue === 'mozaika'){
-            totalVal(1, 1999);
-            totalVal(6, 9900);
-            totalVal(9, 13900);
-            totalVal(12, 19900);
-          } else {
-            totalVal(1, 2999);
-            totalVal(6, 14900);
-            totalVal(9, 21900);
-            totalVal(12, 24900);
-          }  
-        }
-        priceTotal.textContent = `${total} руб.`;  
-      }
-    };
-
-    cardOrder.addEventListener('change', (event) => {
-      let target = event.target;
-      
-      if(target.matches('input')){
-          countSum();
-        }
-      
-    });
-  };
-  cards(); */
-
-  const cards = () => {
-    const
+  const
       formBlock = document.getElementById('card_order'),
-      arrMozaika = [1990, 9900, 13900, 19900],
+      arrMozaika = [1000, 9900, 13900, 19900],
       arrSchelkovo = [2999, 14900, 21900, 24900],
-      time = document.querySelector('.time'),   
+      time = document.querySelector('.time'),
       timeInput = time.querySelectorAll('input'),
       club = time.querySelectorAll('.club'),
       clubInput = time.querySelector('input'),
       promoCode = document.getElementById('promoCode'),
-      priceTotal = document.getElementById('price-total');    
-      let total = arrMozaika[0];  
-      
+      priceTotal = document.getElementById('price-total');
+
+    let total = 0,
+      indexItem = 0,
+      priceClub = arrMozaika,
+      promo = 1;
+
+    // вывод суммы
+    const renderTotal = (sum) => {
+      priceTotal.textContent = `${sum} руб.`;
+    };
+
+    // расчет суммы
+    const sumTotal = () => {
+      total = Math.floor(priceClub[indexItem] * promo);
+      renderTotal(total);
+    };    
+
     formBlock.addEventListener('change', (event) => {
       let target = event.target;
-      let tot = total;
 
-      const time = (arrClub) => {
-        if(target.closest('.time')){
-          timeInput.forEach((elem, id) => {
-            if(elem.checked === true){
-              tot = arrClub[id];          
-            }
-          });
+      if (target.name === 'card-type') {
+        let parent = target.parentNode;
+        let childrens = parent.querySelectorAll('input');
+        childrens.forEach((item, i) => {
+          if (item === target) {
+            indexItem = i;
+          }
+        });
+      }
+
+      const valInput = (val, arrClub) => {
+        if (target.value === val) {
+          priceClub = arrClub;
+  
+          let tabs = document.querySelectorAll('.time > input');
+          tabs[0].checked = true;
+          indexItem = 0;
         }
       };
-      time(arrMozaika);
-
-      if(target.closest('.club')){
-        const moz = document.getElementById('card_leto_mozaika'),
-          schel = document.getElementById('card_leto_schelkovo');
-        if(moz.value === 'mozaika' && moz.checked){
-
-          time(arrMozaika);
-
-          console.log('Тело «Мозаика»');
-        } else if(schel.value === 'schelkovo' && schel.checked){
-
-          
-          console.log('Тело «Щелково»');
-        }
-
-      }
-    
+      valInput('mozaika', arrMozaika);
+      valInput('schelkovo', arrSchelkovo);
+      
       if(promoCode){
         const promValue = promoCode.value.toLowerCase();
         if(promValue === 'тело2020' || promValue === 'тело 2020'){          
-          tot = Math.floor(tot - tot / 100 * 30);          
-        }  
+          promo = 0.7;          
+        } else {
+          promo = 1;
+        } 
       }
-      
-      
-      priceTotal.textContent = `${tot} руб.`;
-    });
-    priceTotal.textContent = `${total} руб.`;
 
-  };
-  cards();
+      sumTotal();
+    });
+
+    
+
+    sumTotal();
+
+  
 });

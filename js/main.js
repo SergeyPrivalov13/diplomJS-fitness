@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   'use strict'; 
 
-  const body = document.body,
+  const bodyBlock = document.body,
     // Блок с header
     headerMain = document.querySelector('.header-main');
 
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
           
           if(!target.closest('.form-content') || target.closest('.close-btn')){
             idPopUp.style.display = 'none';
-            body.style.cssText = `overflow-x: hidden`;  
+            bodyBlock.style.cssText = `overflow-x: hidden`;  
           } 
           
         });
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
         id = document.getElementById(dataSet);
 
       id.style.display = 'block';
-      body.style.overflow = `hidden`;     
+      bodyBlock.style.overflow = `hidden`;     
       popUp(id);        
     }
   };
@@ -462,7 +462,7 @@ document.addEventListener('DOMContentLoaded', () => {
       errorMessage = 'Что то пошло не так...',
       loadMessage = 'Загрузка...',
       successMessage = document.getElementById('thanks'),
-      consentMessage = 'Нужно поставить галочку',
+      consentMessage = 'Нужно ваше согласие наобработку персональных данных',
       // Форма
       form = document.getElementById(formId),
       // Блок для показа сообщения
@@ -506,9 +506,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if(!target.closest('.form-content') || target.closest('.close-btn')){
           elem.style.display = 'none';
-          body.style.cssText = `overflow-x: hidden`;  
-        } 
-        
+          bodyBlock.style.cssText = `overflow-x: hidden`;  
+        }  
       });
     };
 
@@ -521,10 +520,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if(checkInpit){        
         // Проверка на пустоту полей
         for(let i = 0; i < inputs.length; i++){
-          if(inputs[i].value === ''){
-            alert('Заполните все поля в форме!');  
-            return;
-          }
+          if(inputs[i].getAttribute('name') !== 'promo'){
+            if(inputs[i].value === ''){            
+              alert('Заполните все поля в форме!');  
+              return;
+            }            
+          }  
         }
 
         // Добавляем элемент на страницу
@@ -542,13 +543,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         postData(body)
           .then(() => {          
-            if(form.getAttribute('name') === 'free-visit-form' || form.getAttribute('name') === 'callback-form'){
+            if(form.getAttribute('name') === 'free-visit-form'){
               const freeVisit = document.getElementById('free_visit_form');
               freeVisit.style.display = 'none';
             }
 
             if(form.getAttribute('name') === 'callback-form'){
-              const callback = document.getElementById('form1');
+              const callback = document.getElementById('callback_form');
               callback.style.display = 'none';
             }
             
@@ -559,6 +560,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             setTimeout(() => {
               successMessage.style.display = `none`;
+              bodyBlock.style.cssText = `overflow-x: hidden`;
               statusMessage.remove();
             }, 5000);
           })
@@ -568,7 +570,7 @@ document.addEventListener('DOMContentLoaded', () => {
           });
           
         } else {
-          alert('Нужно ваше согласие наобработку персональных данных');  
+          alert(consentMessage);  
         }   
     });
   };
@@ -579,7 +581,7 @@ document.addEventListener('DOMContentLoaded', () => {
   sendForm('footer_form', 'club-name');
 
   // Калькулятор - Клубные карты
-  const cards = () => {
+  /* const cards = () => {
     const 
     // Блок с формой
     cardOrder = document.getElementById('card_order'),    
@@ -627,7 +629,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if(promoCode){
         const promoValue = promoCode.value;
         if(promoValue === 'ТЕЛО2020'){
-          if(clubValue === 'mozaika'){
+          if(clubValue === 'schelkovo'){
             totalValPromo(1, 1999);
             totalValPromo(6, 9900);
             totalValPromo(9, 13900);
@@ -664,6 +666,52 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       
     });
+  };
+  cards(); */
+
+  const cards = () => {
+    const
+      formBlock = document.getElementById('card_order'),
+      arrMozaika = [1990, 9900, 13900, 19900],
+      arrSchelkovo = [2999, 14900, 21900, 24900],
+      time = document.querySelector('.time'),   
+      timeInput = time.querySelectorAll('input'),
+      club = time.querySelectorAll('.club'),
+      promoCode = document.getElementById('promoCode'),
+      priceTotal = document.getElementById('price-total');    
+      let total = arrMozaika[0];  
+      
+    formBlock.addEventListener('change', (event) => {
+      let target = event.target;
+      let tot = total;
+
+      const time = (arrClub) => {
+        if(target.closest('.time')){
+          timeInput.forEach((elem, id) => {
+            if(elem.checked === true){
+              tot = arrClub[id];          
+            }
+          });
+        }
+      };
+      time(arrMozaika);
+
+      club.forEach((elem, id) => {
+
+      });
+
+      if(promoCode){
+        const promValue = promoCode.value.toLowerCase();
+        if(promValue === 'тело2020' || promValue === 'тело 2020'){          
+          tot = Math.floor(tot - tot / 100 * 30);          
+        }  
+      }
+      
+      
+      priceTotal.textContent = `${tot} руб.`;
+    });
+    priceTotal.textContent = `${total} руб.`;
+
   };
   cards();
 });

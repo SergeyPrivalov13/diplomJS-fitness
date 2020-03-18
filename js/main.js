@@ -677,6 +677,7 @@ document.addEventListener('DOMContentLoaded', () => {
       time = document.querySelector('.time'),   
       timeInput = time.querySelectorAll('input'),
       club = time.querySelectorAll('.club'),
+      clubInput = time.querySelector('input'),
       promoCode = document.getElementById('promoCode'),
       priceTotal = document.getElementById('price-total');    
       let total = arrMozaika[0];  
@@ -696,10 +697,22 @@ document.addEventListener('DOMContentLoaded', () => {
       };
       time(arrMozaika);
 
-      club.forEach((elem, id) => {
+      if(target.closest('.club')){
+        const moz = document.getElementById('card_leto_mozaika'),
+          schel = document.getElementById('card_leto_schelkovo');
+        if(moz.value === 'mozaika' && moz.checked){
 
-      });
+          time(arrMozaika);
 
+          console.log('Тело «Мозаика»');
+        } else if(schel.value === 'schelkovo' && schel.checked){
+
+          
+          console.log('Тело «Щелково»');
+        }
+
+      }
+    
       if(promoCode){
         const promValue = promoCode.value.toLowerCase();
         if(promValue === 'тело2020' || promValue === 'тело 2020'){          

@@ -1831,6 +1831,10 @@ nav.popup-menu .close-menu-btn img {
   display: none
 }
 
+#card_order .load {
+  color: #000000;
+}
+
 #card_order .time {
   margin-bottom: 25px;
   display: -moz-flex;
@@ -2267,6 +2271,10 @@ footer .footer-bottom .right .socials .social-icon:hover a {
   background-color: #1e1c34;
   margin: 0 auto;
   text-align: center
+}
+
+.popup .form-content .load {
+  color: white;
 }
 
 .popup .form-content .btn {

@@ -467,7 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
       form = document.getElementById(formId),
       // Блок для показа сообщения
       statusMessage = document.createElement('div');
-      statusMessage.style.color = `white`;
+      statusMessage.classList.add('load');
 
     // Функция запроса на сервер
     const postData = (body) => {
@@ -583,16 +583,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Калькулятор - Клубные карты
   const
       formBlock = document.getElementById('card_order'),
-      arrMozaika = [1000, 9900, 13900, 19900],
+      arrMozaika = [1990, 9900, 13900, 19900],
       arrSchelkovo = [2999, 14900, 21900, 24900],
-      time = document.querySelector('.time'),
-      timeInput = time.querySelectorAll('input'),
-      club = time.querySelectorAll('.club'),
-      clubInput = time.querySelector('input'),
       promoCode = document.getElementById('promoCode'),
-      priceTotal = document.getElementById('price-total');
+      priceTotal = document.getElementById('price-total'),
+      formCalc = document.getElementById('form-calc');
 
-    let total = 0,
+    if(formCalc){
+      let total = 0,
       indexItem = 0,
       priceClub = arrMozaika,
       promo = 1;
@@ -606,7 +604,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const sumTotal = () => {
       total = Math.floor(priceClub[indexItem] * promo);
       renderTotal(total);
-    };    
+    };
 
     formBlock.addEventListener('change', (event) => {
       let target = event.target;
@@ -641,13 +639,9 @@ document.addEventListener('DOMContentLoaded', () => {
           promo = 1;
         } 
       }
-
       sumTotal();
     });
-
-    
-
     sumTotal();
-
-  
+      
+    }  
 });

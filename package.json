@@ -1,5 +1,5 @@
 {
-  "name": "glojs",
+  "name": "diplomjs",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -7,12 +7,20 @@
     "dev": "webpack-dev-server --open --mode=development",
     "build": "webpack --mode=production"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SergeyPrivalov13/diplomJS-fitness.git"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SergeyPrivalov13/diplomJS-fitness/issues"
+  },
+  "homepage": "https://github.com/SergeyPrivalov13/diplomJS-fitness#readme",
   "devDependencies": {
-    "@babel/core": "^7.8.6",
-    "@babel/preset-env": "^7.8.6",
+    "@babel/core": "^7.8.7",
+    "@babel/preset-env": "^7.8.7",
     "babel-loader": "^8.0.6",
     "path": "^0.12.7",
     "webpack": "^4.42.0",
@@ -20,7 +28,7 @@
     "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
-    "@babel/polyfill": "^7.8.3",
+    "@babel/polyfill": "^7.8.7",
     "element-closest": "^3.0.2",
     "fetch-polyfill": "^0.8.2",
     "formdata-polyfill": "^3.0.19",
